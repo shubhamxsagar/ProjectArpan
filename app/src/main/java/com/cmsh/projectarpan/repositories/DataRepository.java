@@ -14,6 +14,7 @@ import com.cmsh.projectarpan.responses.RegisterResponse;
 import java.io.File;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,7 +82,7 @@ public class DataRepository {
     });
         return data;
 }
-    public LiveData<DataResponse> register(String name, String mobile, String location, String email, MultipartBody.Part profile, String token){
+    public LiveData<DataResponse> register(RequestBody name, RequestBody mobile, RequestBody location, RequestBody email, MultipartBody.Part profile, String token){
         MutableLiveData<DataResponse> data = new MutableLiveData<>();
         Call<DataResponse> call = apiService.register(name,mobile,location,email,profile, "Bearer " + token);
         call.enqueue(new Callback<DataResponse>() {

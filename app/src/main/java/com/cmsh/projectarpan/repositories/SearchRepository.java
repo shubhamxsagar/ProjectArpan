@@ -21,9 +21,9 @@ public class SearchRepository {
         apiService = ApiClient.getRetrofit().create(ApiService.class);
     }
 
-    public LiveData<DataResponse> getMaidSearch(String name,int page, String token){
+    public LiveData<DataResponse> getMaidSearch(String name,String location,int page, String token){
         MutableLiveData<DataResponse> data = new MutableLiveData<>();
-        Call<DataResponse> call = apiService.getMaidBySearch(name, page, "Bearer " + token);
+        Call<DataResponse> call = apiService.getMaidBySearch(name, location, page, "Bearer " + token);
 
         call.enqueue(new Callback<DataResponse>() {
             @Override
@@ -49,9 +49,9 @@ public class SearchRepository {
         return data;
     }
 
-    public LiveData<DataResponse> getContractorBySearch(String name,int page, String token){
+    public LiveData<DataResponse> getContractorBySearch(String name,String location,int page, String token){
         MutableLiveData<DataResponse> data = new MutableLiveData<>();
-        Call<DataResponse> call = apiService.getContractorBySearch(name, page, "Bearer " + token);
+        Call<DataResponse> call = apiService.getContractorBySearch(name, location, page, "Bearer " + token);
 
         call.enqueue(new Callback<DataResponse>() {
             @Override

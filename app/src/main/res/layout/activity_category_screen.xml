@@ -6,21 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".activities.CategoryScreen">
 
-
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/_60sdp"
+        android:paddingBottom="@dimen/_40sdp"
+        android:background="@drawable/corner_tab"
+        app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:paddingLeft="@dimen/_20sdp"
+        android:paddingRight="@dimen/_20sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_30sdp"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
             android:fontFamily="@font/sf_pro_text_bold"
-            android:text="What are you looking for"/>
+            android:text="What are you looking for"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_30sdp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile"
+            android:layout_width="@dimen/_55sdp"
+            android:layout_height="@dimen/_55sdp"
+            android:src="@drawable/male_user"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_24sdp"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
 
         <GridLayout
             android:layout_width="match_parent"
@@ -153,9 +179,9 @@
                         android:id="@+id/imageView3"
                         android:layout_width="44dp"
                         android:layout_height="33dp"
+                        android:src="@drawable/massage"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:src="@drawable/massage"
                         app:layout_constraintHorizontal_bias="0.482"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -201,9 +227,9 @@
                         android:id="@+id/imageView4"
                         android:layout_width="44dp"
                         android:layout_height="33dp"
+                        android:src="@drawable/plumber"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:src="@drawable/plumber"
                         app:layout_constraintHorizontal_bias="0.482"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -249,10 +275,10 @@
                         android:id="@+id/imageView5"
                         android:layout_width="44dp"
                         android:layout_height="33dp"
+                        android:src="@drawable/electrician"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.482"
-                        android:src="@drawable/electrician"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0" />
@@ -297,10 +323,10 @@
                         android:id="@+id/imageView"
                         android:layout_width="44dp"
                         android:layout_height="33dp"
+                        android:src="@drawable/driver"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.482"
-                        android:src="@drawable/driver"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0" />
@@ -344,10 +370,10 @@
                         android:id="@+id/imageView7"
                         android:layout_width="44dp"
                         android:layout_height="33dp"
+                        android:src="@drawable/beautician"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.482"
-                        android:src="@drawable/beautician"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0" />
@@ -391,10 +417,10 @@
                         android:id="@+id/imageView8"
                         android:layout_width="44dp"
                         android:layout_height="33dp"
+                        android:src="@drawable/tutor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.482"
-                        android:src="@drawable/tutor"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0" />
@@ -439,10 +465,10 @@
                         android:id="@id/imageView9"
                         android:layout_width="44dp"
                         android:layout_height="33dp"
+                        android:src="@drawable/compound"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.482"
-                        android:src="@drawable/compound"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0" />

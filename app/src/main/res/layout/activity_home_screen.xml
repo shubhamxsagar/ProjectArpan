@@ -30,7 +30,6 @@
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:background="@drawable/corner_tab"
-
             android:padding="@dimen/_14sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -146,6 +145,16 @@
                     android:src="@drawable/ic_search"/>
 
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/filter"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/filter"
+                app:tint="@color/white"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:clickable="true"
+                android:layout_gravity="end"/>
 
         </LinearLayout>
 

@@ -18,19 +18,19 @@ public class SearchViewModel extends ViewModel {
         searchRepository = new SearchRepository();
     }
 
-    public LiveData<DataResponse> getMaidList(String name, int page, String token) {
+    public LiveData<DataResponse> getMaidList(String name, String location, int page, String token) {
         // Ensure that dataRepository is not null before calling its methods
         if (searchRepository != null) {
-            return searchRepository.getMaidSearch(name, page, token);
+            return searchRepository.getMaidSearch(name, location, page, token);
         } else {
             // Handle the case where dataRepository is null (e.g., log an error, return null, etc.)
             return null;
         }
     }
-    public LiveData<DataResponse> getContractorBySearch(String name, int page, String token) {
+    public LiveData<DataResponse> getContractorBySearch(String name, String location, int page, String token) {
         // Ensure that dataRepository is not null before calling its methods
         if (searchRepository != null) {
-            return searchRepository.getContractorBySearch(name, page, token);
+            return searchRepository.getContractorBySearch(name, location, page, token);
         } else {
             // Handle the case where dataRepository is null (e.g., log an error, return null, etc.)
             return null;

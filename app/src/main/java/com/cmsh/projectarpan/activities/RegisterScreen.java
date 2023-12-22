@@ -59,6 +59,7 @@ public class RegisterScreen extends AppCompatActivity {
     Uri selectedImageUri;
     String path;
     RequestBody requestFile, cus_name, cus_reference;
+    RequestBody description, reqName, reqMobile, reqLocation, reqPhone, reqProfile, reqEmail;
     MultipartBody.Part body;
 
     @Override
@@ -119,14 +120,20 @@ public class RegisterScreen extends AppCompatActivity {
 //                    // Check if selectedImageUri is not null before creating a File object
 //                    // Ensure that the imageFile exists before proceeding
                 Log.e("TAG", "onClick:path "+path);
+
                 if (path!=null){
                     File file = new File(path);
                     requestFile = RequestBody.create(MediaType.parse("multipart/form-data"),file);
-                    body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+                    body = MultipartBody.Part.createFormData("profilePic", file.getName(), requestFile);
+                    String descriptionString = "Sample description";
+                    reqEmail = RequestBody.create(MediaType.parse("multipart/form-data"), binding.email.getText().toString());
+                    reqMobile = RequestBody.create(MediaType.parse("multipart/form-data"), phonno);
+                    reqName = RequestBody.create(MediaType.parse("multipart/form-data"), binding.name.getText().toString());
+                    reqLocation = RequestBody.create(MediaType.parse("multipart/form-data"), binding.location.getText().toString());
                 }
 
                 Log.e("TAG", "onClick: "+ body);
-                        dataViewModel.register(binding.name.getText().toString(),phonno,binding.location.getText().toString(), binding.email.getText().toString(),body, Utils.INSTANCE.getToken()).observe(RegisterScreen.this, new Observer<DataResponse>() {
+                        dataViewModel.register(reqName,reqMobile,reqLocation, reqEmail,body, Utils.INSTANCE.getToken()).observe(RegisterScreen.this, new Observer<DataResponse>() {
                             @Override
                             public void onChanged(DataResponse dataResponse) {
                                 Log.e("TAG", "onChanged: "+dataResponse.getMsg());

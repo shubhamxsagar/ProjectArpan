@@ -8,6 +8,7 @@ import com.cmsh.projectarpan.responses.DataResponse;
 import com.cmsh.projectarpan.responses.RegisterResponse;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class DataViewModel extends ViewModel {
 
@@ -38,7 +39,7 @@ public class DataViewModel extends ViewModel {
         }
     }
 
-    public LiveData<DataResponse> register(String name, String mobile, String location, String email, MultipartBody.Part profile, String token) {
+    public LiveData<DataResponse> register(RequestBody name, RequestBody mobile, RequestBody location, RequestBody email, MultipartBody.Part profile, String token) {
         // Ensure that dataRepository is not null before calling its methods
         if (dataRepository != null) {
             return dataRepository.register(name,mobile,location, email,profile, token);

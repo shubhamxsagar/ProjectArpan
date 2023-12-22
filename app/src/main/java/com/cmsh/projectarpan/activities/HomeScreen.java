@@ -7,6 +7,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -29,33 +30,50 @@ import android.widget.TextView;
 import com.cmsh.projectarpan.R;
 import com.cmsh.projectarpan.Utils;
 import com.cmsh.projectarpan.adaptes.ListAdapter;
+import com.cmsh.projectarpan.adaptes.LocationListAdapter;
 import com.cmsh.projectarpan.databinding.ActivityHomeScreenBinding;
 import com.cmsh.projectarpan.listeners.ListListener;
+import com.cmsh.projectarpan.listeners.RvLocationListener;
 import com.cmsh.projectarpan.responses.DataResponse;
 import com.cmsh.projectarpan.responses.ListResponse;
+import com.cmsh.projectarpan.responses.LocationListResponse;
+import com.cmsh.projectarpan.responses.LocationResponse;
 import com.cmsh.projectarpan.responses.RegisterResponse;
 import com.cmsh.projectarpan.viewmodels.DataViewModel;
+import com.cmsh.projectarpan.viewmodels.LocationViewModel;
 import com.cmsh.projectarpan.viewmodels.SearchViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.Chip;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeScreen extends AppCompatActivity implements ListListener {
+public class HomeScreen extends AppCompatActivity implements ListListener, RvLocationListener {
 
     SearchViewModel searchViewModel;
     private ActivityHomeScreenBinding binding;
     private DataViewModel viewModel;
     private List<ListResponse> list=new ArrayList<>();
+    private List<LocationListResponse> locationList=new ArrayList<>();
     private ListAdapter listAdapter;
     private int currentPage = 1;
     private int totalAvailablePage = 1;
     SwipeRefreshLayout swipeRefreshLayout;
     String category;
-
     String dName, dEmail, dLocation, dPhone, dImage;
+    LocationViewModel locationViewModel;
+
+    private LocationListAdapter locationListAdapter;
+    Chip all, name, location;
+    RecyclerView locationRv;
+    TextView count;
+    RvLocationListener listListener;
+    BottomSheetDialog bottomSheetDialogFilter;
+
+    String searchName, searchLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,21 +102,50 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
         String phone = sharedPreferences.getString("savephone", "");
 
         viewModel = new ViewModelProvider(this).get(DataViewModel.class);
+        locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+
+        bottomSheetDialogFilter = new BottomSheetDialog(HomeScreen.this, R.style.DialogStyle);
+        bottomSheetDialogFilter.setContentView(R.layout.filter_screen);
+        bottomSheetDialogFilter.getBehavior().setState(BottomSheetBehavior.STATE_EXPANDED);
+        locationRv = bottomSheetDialogFilter.findViewById(R.id.locationRv);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        locationRv.setLayoutManager(linearLayoutManager);
+        count = bottomSheetDialogFilter.findViewById(R.id.count);
+
+        binding.filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CoordinatorLayout layout2 = bottomSheetDialogFilter.findViewById(R.id.coordinatorLayout);
+                assert layout2 !=null;
+                layout2.setMinimumHeight(Resources.getSystem().getDisplayMetrics().heightPixels);
+                bottomSheetDialogFilter.show();
+
+                if (category.equals("maid")){
+                    count.setText("Available Maid");
+                    getMaidsLocationList();
+                } else if (category.equals("contractor")) {
+                    count.setText("Available Contractor");
+                    getContractorLocationList();
+                }
+            }
+        });
+
         viewModel.isRegistered(phone,Utils.INSTANCE.getToken()).observe(this, new Observer<RegisterResponse>() {
             @Override
             public void onChanged(RegisterResponse registerResponse) {
+                Log.e("TAG", "onChanged: registerResponse "+registerResponse.getData().getName() );
                 if (registerResponse!=null){
                     if (registerResponse.isStatus()){
                         if (registerResponse.getData().getProfilePic()==null){
                             binding.profilePic.setImageResource(R.drawable.male_user);
-                            dName = registerResponse.getData().getName();
-                            dEmail = registerResponse.getData().getEmail();
-                            dLocation = registerResponse.getData().getLocation();
-                            dPhone = registerResponse.getData().getMobile();
-                            dImage = registerResponse.getData().getProfilePic();
                         }else{
                             Picasso.get().load(registerResponse.getData().getProfilePic()).into(binding.profilePic);
                         }
+                        dName = registerResponse.getData().getName();
+                        dEmail = registerResponse.getData().getEmail();
+                        dLocation = registerResponse.getData().getLocation();
+                        dPhone = registerResponse.getData().getMobile();
+                        dImage = registerResponse.getData().getProfilePic();
                     }
                 }
             }
@@ -156,14 +203,16 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
                     if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
                         currentPage=1;
                         listAdapter.clearList();
-                        doInitializationSearchMaid();
+                        searchName=binding.tabSearch.getText().toString();
+                        doInitializationSearchMaid(searchName, searchLocation);
                         return true;
                     }
                 }else if(category.equals("contractor")){
                     if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
                         currentPage=1;
                         listAdapter.clearList();
-                        doInitializationSearchContractor();
+                        searchName=binding.tabSearch.getText().toString();
+                        doInitializationSearchContractor(searchName, searchLocation);
                         return true;
                     }
                 }
@@ -174,19 +223,28 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
         binding.searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentPage=1;
-                listAdapter.clearList();
-                doInitializationSearchMaid();
+                if (category.equals("maid")){
+                    currentPage=1;
+                    listAdapter.clearList();
+                    searchName=binding.tabSearch.getText().toString();
+                    doInitializationSearchMaid(searchName, searchLocation);
+                } else if (category.equals("contractor")) {
+                    currentPage=1;
+                    listAdapter.clearList();
+                    searchName=binding.tabSearch.getText().toString();
+                    doInitializationSearchContractor(searchName, searchLocation);
+                }
             }
         });
 
     }
 
-    private void doInitializationSearchMaid(){
+    private void doInitializationSearchMaid(String searchName, String searchLocation){
         Log.e("TAG", "doInitializationSearchMaid: ");
         binding.tvShowsRecyclerView.setHasFixedSize(true);
         searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
         listAdapter = new ListAdapter(list, this);
+        listAdapter.clearList();
         binding.tvShowsRecyclerView.setAdapter(listAdapter);
 
         binding.tvShowsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -196,17 +254,18 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
                 if (!binding.tvShowsRecyclerView.canScrollVertically(1)){
                     if (currentPage <= totalAvailablePage){
                         currentPage += 1;
-                        getListSearchMaid();
+                        getListSearchMaid(searchName, searchLocation);
                     }
                 }
             }
         });
-        getListSearchMaid();
+        getListSearchMaid(searchName, searchLocation);
     }
 
-    private void getListSearchMaid(){
+    private void getListSearchMaid(String searchName, String searchLocation){
+        Log.e("TAG", "getListSearchMaid: "+searchName+" "+searchLocation);
         toggleLoading();
-        searchViewModel.getMaidList(binding.tabSearch.getText().toString(), currentPage, Utils.INSTANCE.getToken()).observe(this, new Observer<DataResponse>() {
+        searchViewModel.getMaidList(searchName, searchLocation, currentPage, Utils.INSTANCE.getToken()).observe(this, new Observer<DataResponse>() {
             @Override
             public void onChanged(DataResponse dataResponse) {
                 HomeScreen.this.toggleLoading();
@@ -223,11 +282,12 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
         });
     }
 
-    private void doInitializationSearchContractor(){
+    private void doInitializationSearchContractor(String searchName, String searchLocation){
         Log.e("TAG", "doInitializationSearchMaid: ");
         binding.tvShowsRecyclerView.setHasFixedSize(true);
         searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
         listAdapter = new ListAdapter(list, this);
+        listAdapter.clearList();
         binding.tvShowsRecyclerView.setAdapter(listAdapter);
 
         binding.tvShowsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -237,17 +297,17 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
                 if (!binding.tvShowsRecyclerView.canScrollVertically(1)){
                     if (currentPage <= totalAvailablePage){
                         currentPage += 1;
-                        getListSearchContractor();
+                        getListSearchContractor(searchName, searchLocation);
                     }
                 }
             }
         });
-        getListSearchContractor();
+        getListSearchContractor(searchName, searchLocation);
     }
 
-    private void getListSearchContractor(){
+    private void getListSearchContractor(String searchName, String searchLocation){
         toggleLoading();
-        searchViewModel.getContractorBySearch(binding.tabSearch.getText().toString(), currentPage, Utils.INSTANCE.getToken()).observe(this, new Observer<DataResponse>() {
+        searchViewModel.getContractorBySearch(searchName, searchLocation, currentPage, Utils.INSTANCE.getToken()).observe(this, new Observer<DataResponse>() {
             @Override
             public void onChanged(DataResponse dataResponse) {
                 HomeScreen.this.toggleLoading();
@@ -346,6 +406,56 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
         });
     }
 
+    private void getMaidsLocationList(){
+
+        Log.e("TAG", "getMaidsLocationList: ");
+
+//        listAdapter.clearList();
+        locationViewModel.getMaidsLocationList(Utils.INSTANCE.getToken()).observe(this, new Observer<LocationResponse>() {
+            @Override
+            public void onChanged(LocationResponse dataResponse) {
+
+                if (dataResponse != null) {
+                    if (dataResponse.getData() != null) {
+//                        int oldCount=locationList.size();
+//                        locationList.addAll(dataResponse.getData());
+//                        listAdapter.notifyItemRangeInserted(oldCount, locationList.size());
+                        locationRv.setHasFixedSize(true);
+                        locationListAdapter = new LocationListAdapter(dataResponse.getData(), HomeScreen.this);
+                        Log.e("TAG", "onChanged: dataResponse "+locationListAdapter);
+                        locationRv.setAdapter(locationListAdapter);
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void getContractorLocationList(){
+
+        Log.e("TAG", "getMaidsLocationList: ");
+
+//        listAdapter.clearList();
+        locationViewModel.getContractorsLocationList(Utils.INSTANCE.getToken()).observe(this, new Observer<LocationResponse>() {
+            @Override
+            public void onChanged(LocationResponse dataResponse) {
+
+                if (dataResponse != null) {
+                    if (dataResponse.getData() != null) {
+//                        int oldCount=locationList.size();
+//                        locationList.addAll(dataResponse.getData());
+//                        listAdapter.notifyItemRangeInserted(oldCount, locationList.size());
+                        locationRv.setHasFixedSize(true);
+                        locationListAdapter = new LocationListAdapter(dataResponse.getData(), HomeScreen.this);
+                        Log.e("TAG", "onChanged: dataResponse "+locationListAdapter);
+                        locationRv.setAdapter(locationListAdapter);
+                    }
+                }
+
+            }
+        });
+    }
+
     private void toggleLoading(){
         if (currentPage == 1){
             if (binding.getIsLoading()!= null && binding.getIsLoading()){
@@ -405,6 +515,8 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
         email.setText(dEmail);
         location.setText(dLocation);
 
+        Log.e("TAG", "startBottom: "+dName);
+
         if (dImage==null){
             image.setImageResource(R.drawable.male_user);
         }else {
@@ -414,4 +526,14 @@ public class HomeScreen extends AppCompatActivity implements ListListener {
         bottomSheetDialog.show();
     }
 
+    @Override
+    public void onListClicked(LocationListResponse locationListResponse) {
+        bottomSheetDialogFilter.dismiss();
+        currentPage=1;
+        if (category.equals("maid")){
+            doInitializationSearchMaid(searchName,locationListResponse.getLocation());
+        } else if (category.equals("contractor")) {
+            doInitializationSearchContractor(searchName, locationListResponse.getLocation());
+        }
+    }
 }
