@@ -13,7 +13,7 @@ ProjectArpan is an Android application built using the MVVM (Model-View-ViewMode
 <img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/76864f8a-09fb-4c32-be53-ed74df61eff2" width="200" height="400" />
 <img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/4c8846e5-5c4e-4487-918b-979fa56938e7" width="200" height="400" />
 <img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/ab26055b-5f98-4ae8-bd1e-83cb54ad2e6c" width="200" height="400" />
-<img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/b57d2d2a-ae78-4fa8-a48d-2773fbd5f7df" width="200" height="400" />
+<img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/a5d78503-0edf-4b4f-8faa-8ae83f09abc3" width="200" height="400" />
 <img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/092d4eec-2e41-437d-b936-36dc79df9839" width="200" height="400" />
 
 
