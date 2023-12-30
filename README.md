@@ -8,6 +8,15 @@ ProjectArpan is an Android application built using the MVVM (Model-View-ViewMode
 - **Location-Based Search**: Users can search for maids or contractors based on their location.
 - **Direct Communication**: Facilitates direct communication between users and service providers to discuss terms, availability, and other specifics.
 
+## Screenshot
+
+<img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/76864f8a-09fb-4c32-be53-ed74df61eff2" width="200" height="400" />
+<img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/4c8846e5-5c4e-4487-918b-979fa56938e7" width="200" height="400" />
+<img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/ab26055b-5f98-4ae8-bd1e-83cb54ad2e6c" width="200" height="400" />
+<img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/b57d2d2a-ae78-4fa8-a48d-2773fbd5f7df" width="200" height="400" />
+<img src="https://github.com/shubhamxsagar/ProjectArpan/assets/72368658/092d4eec-2e41-437d-b936-36dc79df9839" width="200" height="400" />
+
+
 ## Technology Stack
 
 - **Backend**: APIs developed using Node.js.
